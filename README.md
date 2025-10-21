@@ -85,12 +85,6 @@ By leveraging a microcontroller as a universal interface, the design bridges the
 
 ---
 
-## 📸 Coming Soon
-
-Pictures of the complete breadboard setup, including CPU, EEPROM, and clock wiring.
-
----
-
 ## 🧰 License
 
 Open-source for educational and non-commercial use. Contributions and forks are welcome.
