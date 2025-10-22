@@ -76,6 +76,19 @@ By leveraging a microcontroller as a universal interface, the design bridges the
 
 ---
 
+## 🙏 Acknowledgments
+
+This project was primarily inspired by **Ben Eater's** excellent work on building an 8-bit computer from scratch. His clear, educational approach to teaching computer architecture and his detailed video series have been instrumental in making projects like this accessible to learners and hobbyists.
+
+**Resources:**
+- [Ben Eater's Website](https://eater.net/)
+- [Ben Eater's YouTube Channel](https://www.youtube.com/beneater)
+- [6502 Computer Build Series](https://eater.net/6502)
+
+Much of the foundational design, including the bus architecture, clock circuitry, and programming approach, is based on Ben's tutorials. We highly recommend checking out his content for anyone interested in building their own computer or understanding how computers work at the hardware level.
+
+---
+
 ## 🔧 Planned Improvements
 
 - Add I/O expansion via VIA chip integration
