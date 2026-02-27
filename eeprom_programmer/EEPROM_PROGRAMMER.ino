@@ -191,31 +191,71 @@ void prog_writeEEPROM(uint16_t address, uint8_t data) {
   delayMicroseconds(1);
   we_high();
 
-  //might have to be 10 idk
-  delay(10);
-
   dataPinsInput();
-  uint8_t v = prog_readEEPROM(address);
-  
-  if (v != data) {
-    Serial.print(F("WARN verify fail @ ")); Serial.print(address, HEX);
-    Serial.print(F(" wrote ")); Serial.print(data, HEX);
-    Serial.print(F(" read "));  Serial.println(v, HEX);
+  //instead of delaying for write, we wait until the eeprom displays the value we wrote (Cuts time down)
+  uint8_t v;
+  do {
+      v = prog_readEEPROM(address);
+  } while (v != data);
+
+}
+
+void prog_writePage(uint16_t baseAddr, const uint8_t *data, uint8_t len) {
+  // Must not cross 64-byte boundary
+  if ((baseAddr & 0x3F) + len > 64) return;
+
+  addrPinsOutput();
+  dataPinsOutput();
+
+  pinMode(CHIP_ENABLE, OUTPUT);
+  pinMode(OUTPUT_ENABLE, OUTPUT);
+  pinMode(WRITE_ENABLE, OUTPUT);
+
+  ce_low();
+  oe_high();
+  we_high();
+
+  // Load entire page
+  for (uint8_t i = 0; i < len; i++) {
+    driveAddress(baseAddr + i);
+    driveData(data[i]);
+
+    delayMicroseconds(1);
+
+    we_low();
+    delayMicroseconds(1);
+    we_high();
   }
+
+  ce_high();
+  dataPinsInput();
+
+  // Data polling on last byte
+  uint8_t lastValue = data[len - 1];
+  uint8_t v;
+  do {
+    v = prog_readEEPROM(baseAddr + len - 1);
+  } while (v != lastValue);
 }
 
 void prog_eraseEntire() {
-  Serial.print(F("Erasing EEPROM"));
-  int i = 0;
-  for (uint16_t address = 0; address <= 0x7FFF; address++) {
-    prog_writeEEPROM(address, 0xEA);
-    if ((address & 0x003F) == 0) { // every 64 bytes
-      i++;
-      Serial.print(i);
-      Serial.print(F("/512 . "));
-    }
+  Serial.print(F("Fast erase (page mode)... "));
+
+  uint8_t page[64];
+  for (uint8_t i = 0; i < 64; i++)
+    page[i] = 0xFF;
+
+  int pageCount = 0;
+
+  for (uint16_t base = 0; base <= 0x7FC0; base += 64) {
+    prog_writePage(base, page, 64);
+
+    pageCount++;
+    Serial.print(pageCount);
+    Serial.print(F("/512 "));
   }
-  Serial.println(F("done"));
+
+  Serial.println(F("done."));
 }
 
 void prog_dump(uint16_t base, uint16_t lines) {
