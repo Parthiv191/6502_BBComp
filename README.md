@@ -15,11 +15,10 @@ Instead of using a commercial EEPROM programmer, we utilize an **Arduino Mega 25
 > _Typical EEPROM programmers and logic analyzers can cost over $200. This system achieves the same functionality using an [ELEGOO Arduino Mega 2560](https://www.amazon.com/ELEGOO-ATmega2560-ATMEGA16U2-Arduino-Compliant/dp/B01H4ZDYCE/) and a custom Arduino sketch we've developed._
 
 ### Why the Arduino Mega?
-While many builders (like **Ben Eater**) use an Arduino Nano or Mini coupled with **74HC595 shift registers** to expand I/O, we opted for the **Mega 2560**. 
+While many builders, like **Ben Eater**, use an Arduino Nano or Mini coupled with **74HC595 shift registers** to expand I/O, we opted for the **Mega 2560**. 
 
 * **Direct Access:** With **54 digital I/O pins**, the Mega allows us to connect directly to the 16-bit address bus, 8-bit data bus, and control lines simultaneously.
 * **Simplicity:** This eliminates the need for complex shift-register wiring and the "bit-banging" required to shift data in and out, making the debugger much more responsive and easier to wire.
-* **Power:** The Mega provides enough pins to monitor the entire state of the CPU in real-time without hardware multiplexing or extra setup.
 
 ---
 
@@ -66,7 +65,7 @@ While many builders (like **Ben Eater**) use an Arduino Nano or Mini coupled wit
 
 | Path | Description |
 | :--- | :--- |
-| `mega_programmer/` | Arduino Mega code for programming and bus debugging |
+| `eeprom_programmer/` | Arduino Mega code for programming and bus debugging |
 | `docs/` | Supporting documentation and bus explanations |
 | `schematics/` | Full wiring diagrams for the Mega-to-6502 interface |
 | `programs/` | Assembly programs like “Hello World” and demos |
@@ -83,7 +82,7 @@ The main goal is **accessibility and transparency**. By using a high-pin-count m
 
 ## 🙏 Acknowledgments
 
-This project was primarily inspired by **Ben Eater's** 8-bit computer series. While Ben uses an Arduino Nano/Mini with shift registers for his EEPROM programmer, we adapted the design to use the Mega for a more direct, "wire-per-signal" approach that reduces setup complexity.
+This project was primarily inspired by **Ben Eater's** 8-bit computer series. His clear, educational approach to teaching computer architecture and his detailed video series have been instrumental in making projects like this accessible to learners and hobbyists like ourselves!
 
 **Resources:**
 - [Ben Eater's 6502 Series](https://eater.net/6502)
