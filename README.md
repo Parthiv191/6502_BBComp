@@ -1,7 +1,8 @@
 # 6502 Breadboard Computer
 
 A fully functional 8-bit computer built from the ground up on a breadboard using the **W65C02S** CPU.  
-This project demonstrates key computer architecture principles — including bus control, memory mapping, and timing — implemented entirely with discrete components and a custom-built programming/debugging tool. ## *This is still an on-going project, this repository will be used to document our progress and anythiny we feel necessary.
+This project demonstrates key computer architecture principles — including bus control, memory mapping, and timing — implemented entirely with discrete components and a custom-built programming/debugging tool. 
+## *This is still an on-going project, this repository will be used to document our progress and anythiny we feel necessary.
 
 ---
 
