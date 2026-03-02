@@ -1,16 +1,16 @@
-# 🧠 6502 Breadboard Computer
+# 6502 Breadboard Computer
 
 A fully functional 8-bit computer built from the ground up on a breadboard using the **W65C02S** CPU.  
-This project demonstrates key computer architecture principles — including bus control, memory mapping, and timing — implemented entirely with discrete components and a custom-built programming/debugging tool.
+This project demonstrates key computer architecture principles — including bus control, memory mapping, and timing — implemented entirely with discrete components and a custom-built programming/debugging tool. ## *This is still an on-going project, this repository will be used to document our progress and anythiny we feel necessary.
 
 ---
 
-## 🚀 Overview
+## Overview
 
 This project recreates a complete 6502 computer system using low-cost, readily available components.  
 A custom microcontroller interface handles programming, memory writing, and logic-level debugging — eliminating the need for expensive commercial analyzers or EEPROM programmers.
 
-> 💡 _Typical EEPROM programmers and logic analyzers can cost over $200. This system achieves the same functionality using a $10 microcontroller and open-source software._
+> _Typical EEPROM programmers and logic analyzers can cost over $200. This system achieves the same functionality using a $10 microcontroller and open-source arduino progrma we've developed._
 
 The project is designed to be educational, replicable, and fully transparent — ideal for anyone learning about computer architecture or interested in retro computing. _We are also learning, and would love to hear your feedback!_
 
