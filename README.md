@@ -18,7 +18,7 @@ Instead of using a commercial EEPROM programmer, we utilize an **Arduino Mega 25
 While many builders, like **Ben Eater**, use an Arduino Nano or Mini coupled with **74HC595 shift registers** to expand I/O, we opted for the **Mega 2560**. 
 
 * **Direct Access:** With **54 digital I/O pins**, the Mega allows us to connect directly to the 16-bit address bus, 8-bit data bus, and control lines simultaneously.
-* **Simplicity:** This eliminates the need for complex shift-register wiring and the "bit-banging" required to shift data in and out, making the debugger much more responsive and easier to wire.
+* **Simplicity:** This eliminates the need for shift-register wiring and the "bit-banging" required to shift data in and out, making the debugger much more responsive and easier to wire.
 
 ---
 
