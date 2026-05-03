@@ -35,6 +35,8 @@
 #define A14_PIN 49
 #define A15_PIN 27
 
+#include "fast_digital_io.h"
+
 // ===================== MODE CONTROL =====================
 enum RunMode { MODE_SNIFF, MODE_PROG };
 static RunMode mode = MODE_SNIFF;
@@ -62,22 +64,22 @@ static inline void addrPinsInput() {
 }
 
 static inline void driveAddress(uint16_t address) {
-  digitalWrite(A0_PIN,  (address & 0x0001) ? HIGH : LOW);
-  digitalWrite(A1_PIN,  (address & 0x0002) ? HIGH : LOW);
-  digitalWrite(A2_PIN,  (address & 0x0004) ? HIGH : LOW);
-  digitalWrite(A3_PIN,  (address & 0x0008) ? HIGH : LOW);
-  digitalWrite(A4_PIN,  (address & 0x0010) ? HIGH : LOW);
-  digitalWrite(A5_PIN,  (address & 0x0020) ? HIGH : LOW);
-  digitalWrite(A6_PIN,  (address & 0x0040) ? HIGH : LOW);
-  digitalWrite(A7_PIN,  (address & 0x0080) ? HIGH : LOW);
-  digitalWrite(A8_PIN,  (address & 0x0100) ? HIGH : LOW);
-  digitalWrite(A9_PIN,  (address & 0x0200) ? HIGH : LOW);
-  digitalWrite(A10_PIN, (address & 0x0400) ? HIGH : LOW);
-  digitalWrite(A11_PIN, (address & 0x0800) ? HIGH : LOW);
-  digitalWrite(A12_PIN, (address & 0x1000) ? HIGH : LOW);
-  digitalWrite(A13_PIN, (address & 0x2000) ? HIGH : LOW);
-  digitalWrite(A14_PIN, (address & 0x4000) ? HIGH : LOW);
-  digitalWrite(A15_PIN, (address & 0x8000) ? HIGH : LOW);
+  fastDigitalWrite(A0_PIN,  (address & 0x0001) ? HIGH : LOW);
+  fastDigitalWrite(A1_PIN,  (address & 0x0002) ? HIGH : LOW);
+  fastDigitalWrite(A2_PIN,  (address & 0x0004) ? HIGH : LOW);
+  fastDigitalWrite(A3_PIN,  (address & 0x0008) ? HIGH : LOW);
+  fastDigitalWrite(A4_PIN,  (address & 0x0010) ? HIGH : LOW);
+  fastDigitalWrite(A5_PIN,  (address & 0x0020) ? HIGH : LOW);
+  fastDigitalWrite(A6_PIN,  (address & 0x0040) ? HIGH : LOW);
+  fastDigitalWrite(A7_PIN,  (address & 0x0080) ? HIGH : LOW);
+  fastDigitalWrite(A8_PIN,  (address & 0x0100) ? HIGH : LOW);
+  fastDigitalWrite(A9_PIN,  (address & 0x0200) ? HIGH : LOW);
+  fastDigitalWrite(A10_PIN, (address & 0x0400) ? HIGH : LOW);
+  fastDigitalWrite(A11_PIN, (address & 0x0800) ? HIGH : LOW);
+  fastDigitalWrite(A12_PIN, (address & 0x1000) ? HIGH : LOW);
+  fastDigitalWrite(A13_PIN, (address & 0x2000) ? HIGH : LOW);
+  fastDigitalWrite(A14_PIN, (address & 0x4000) ? HIGH : LOW);
+  fastDigitalWrite(A15_PIN, (address & 0x8000) ? HIGH : LOW);
 }
 
 static inline void dataPinsInput() {
@@ -92,17 +94,17 @@ static inline void dataPinsOutput() {
 
 static inline void driveData(uint8_t data) {
   for (int i = 0; i < 8; i++) {
-    digitalWrite(22 + i * 2, (data & (1 << i)) ? HIGH : LOW);
+    fastDigitalWrite(22 + i * 2, (data & (1 << i)) ? HIGH : LOW);
   }
 }
 
 // Control lines
-static inline void ce_low()  { digitalWrite(CHIP_ENABLE,   LOW);  }
-static inline void ce_high() { digitalWrite(CHIP_ENABLE,   HIGH); }
-static inline void oe_low()  { digitalWrite(OUTPUT_ENABLE, LOW);  }
-static inline void oe_high() { digitalWrite(OUTPUT_ENABLE, HIGH); }
-static inline void we_low()  { digitalWrite(WRITE_ENABLE,  LOW);  }
-static inline void we_high() { digitalWrite(WRITE_ENABLE,  HIGH); }
+static inline void ce_low()  { fastDigitalWrite(CHIP_ENABLE,   LOW);  }
+static inline void ce_high() { fastDigitalWrite(CHIP_ENABLE,   HIGH); }
+static inline void oe_low()  { fastDigitalWrite(OUTPUT_ENABLE, LOW);  }
+static inline void oe_high() { fastDigitalWrite(OUTPUT_ENABLE, HIGH); }
+static inline void we_low()  { fastDigitalWrite(WRITE_ENABLE,  LOW);  }
+static inline void we_high() { fastDigitalWrite(WRITE_ENABLE,  HIGH); }
 
 // ===================== PROGRAMMER MODE =====================
 byte prog_readEEPROM(uint16_t address) {
@@ -121,7 +123,7 @@ byte prog_readEEPROM(uint16_t address) {
 
   byte data = 0;
   for (int i = 0; i < 8; i++) {
-    if (digitalRead(22 + i * 2)) data |= (1 << i);
+    if (fastDigitalRead(22 + i * 2)) data |= (1 << i);
   }
 
   oe_high();
@@ -226,7 +228,7 @@ static inline void sniffPins() {
   pinMode(CHIP_ENABLE,   INPUT);
 
   pinMode(CLOCK_PIN, OUTPUT);
-  digitalWrite(CLOCK_PIN, LOW);
+  fastDigitalWrite(CLOCK_PIN, LOW);
 }
 
 static inline void progPins() {
@@ -237,58 +239,59 @@ static inline void progPins() {
   pinMode(WRITE_ENABLE,  OUTPUT);
   ce_high(); oe_high(); we_high();
   pinMode(CLOCK_PIN, OUTPUT);
-  digitalWrite(CLOCK_PIN, LOW);
+  fastDigitalWrite(CLOCK_PIN, LOW);
 }
 
 static inline uint16_t readAddressBus() {
   uint16_t a = 0;
-  a |= (uint16_t)digitalRead(A0_PIN)  << 0;
-  a |= (uint16_t)digitalRead(A1_PIN)  << 1;
-  a |= (uint16_t)digitalRead(A2_PIN)  << 2;
-  a |= (uint16_t)digitalRead(A3_PIN)  << 3;
-  a |= (uint16_t)digitalRead(A4_PIN)  << 4;
-  a |= (uint16_t)digitalRead(A5_PIN)  << 5;
-  a |= (uint16_t)digitalRead(A6_PIN)  << 6;
-  a |= (uint16_t)digitalRead(A7_PIN)  << 7;
-  a |= (uint16_t)digitalRead(A8_PIN)  << 8;
-  a |= (uint16_t)digitalRead(A9_PIN)  << 9;
-  a |= (uint16_t)digitalRead(A10_PIN) << 10;
-  a |= (uint16_t)digitalRead(A11_PIN) << 11;
-  a |= (uint16_t)digitalRead(A12_PIN) << 12;
-  a |= (uint16_t)digitalRead(A13_PIN) << 13;
-  a |= (uint16_t)digitalRead(A14_PIN) << 14;
-  a |= (uint16_t)digitalRead(A15_PIN) << 15;
+  a |= (uint16_t)fastDigitalRead(A0_PIN)  << 0;
+  a |= (uint16_t)fastDigitalRead(A1_PIN)  << 1;
+  a |= (uint16_t)fastDigitalRead(A2_PIN)  << 2;
+  a |= (uint16_t)fastDigitalRead(A3_PIN)  << 3;
+  a |= (uint16_t)fastDigitalRead(A4_PIN)  << 4;
+  a |= (uint16_t)fastDigitalRead(A5_PIN)  << 5;
+  a |= (uint16_t)fastDigitalRead(A6_PIN)  << 6;
+  a |= (uint16_t)fastDigitalRead(A7_PIN)  << 7;
+  a |= (uint16_t)fastDigitalRead(A8_PIN)  << 8;
+  a |= (uint16_t)fastDigitalRead(A9_PIN)  << 9;
+  a |= (uint16_t)fastDigitalRead(A10_PIN) << 10;
+  a |= (uint16_t)fastDigitalRead(A11_PIN) << 11;
+  a |= (uint16_t)fastDigitalRead(A12_PIN) << 12;
+  a |= (uint16_t)fastDigitalRead(A13_PIN) << 13;
+  a |= (uint16_t)fastDigitalRead(A14_PIN) << 14;
+  a |= (uint16_t)fastDigitalRead(A15_PIN) << 15;
   return a;
 }
 
 static inline uint8_t readDataBusSniff() {
   uint8_t d = 0;
-  d |= (digitalRead(EEPROM_D0) ? 1 : 0) << 0;
-  d |= (digitalRead(EEPROM_D1) ? 1 : 0) << 1;
-  d |= (digitalRead(EEPROM_D2) ? 1 : 0) << 2;
-  d |= (digitalRead(EEPROM_D3) ? 1 : 0) << 3;
-  d |= (digitalRead(EEPROM_D4) ? 1 : 0) << 4;
-  d |= (digitalRead(EEPROM_D5) ? 1 : 0) << 5;
-  d |= (digitalRead(EEPROM_D6) ? 1 : 0) << 6;
-  d |= (digitalRead(EEPROM_D7) ? 1 : 0) << 7;
+  d |= (fastDigitalRead(EEPROM_D0) ? 1 : 0) << 0;
+  d |= (fastDigitalRead(EEPROM_D1) ? 1 : 0) << 1;
+  d |= (fastDigitalRead(EEPROM_D2) ? 1 : 0) << 2;
+  d |= (fastDigitalRead(EEPROM_D3) ? 1 : 0) << 3;
+  d |= (fastDigitalRead(EEPROM_D4) ? 1 : 0) << 4;
+  d |= (fastDigitalRead(EEPROM_D5) ? 1 : 0) << 5;
+  d |= (fastDigitalRead(EEPROM_D6) ? 1 : 0) << 6;
+  d |= (fastDigitalRead(EEPROM_D7) ? 1 : 0) << 7;
   return d;
 }
 
 // PHI2 single-step state machine
-const unsigned long PULSE_HIGH_US = 5;
-const unsigned long PULSE_LOW_US  = 5;
+static unsigned long pulseHighUs = 5;
+static unsigned long pulseLowUs  = 5;
 enum PulseState { IDLE, HIGHING, LOWING };
 static PulseState pulseState = IDLE;
 static int pulsesRemaining = 0;
 static int pulsesTotal = 0;
 static unsigned long lastToggleTs = 0;
+static bool clockMode = false;  // true = free-run via `clock` command
 
 static uint16_t lastAddr = 0xFFFF;
 
 static void sampleAndPrint() {
   delayMicroseconds(3);
   uint16_t addr = readAddressBus();
-  bool rwb = digitalRead(RWB_PIN);
+  bool rwb = fastDigitalRead(RWB_PIN);
   uint8_t data = readDataBusSniff();
   bool eepromActive = (addr & 0x8000) != 0;
 
@@ -309,24 +312,25 @@ static void sampleAndPrint() {
 }
 static void reset_sequence() {
   lastAddr = 0xFFFF;
-  
+  clockMode = false;
+
   Serial.println(F("Starting Reset Sequence..."));
 
   pulsesRemaining = 0;
   pulseState = IDLE;
-  digitalWrite(CLOCK_PIN, LOW);
+  fastDigitalWrite(CLOCK_PIN, LOW);
 
   pinMode(RESET_PIN, OUTPUT);
-  digitalWrite(RESET_PIN, LOW);
+  fastDigitalWrite(RESET_PIN, LOW);
 
   for (int i = 0; i < 2; i++) {
-    delayMicroseconds(PULSE_LOW_US);
-    digitalWrite(CLOCK_PIN, HIGH);
-    delayMicroseconds(PULSE_HIGH_US);
-    digitalWrite(CLOCK_PIN, LOW);
+    delayMicroseconds(pulseLowUs);
+    fastDigitalWrite(CLOCK_PIN, HIGH);
+    delayMicroseconds(pulseHighUs);
+    fastDigitalWrite(CLOCK_PIN, LOW);
   }
 
-  digitalWrite(RESET_PIN, HIGH);
+  fastDigitalWrite(RESET_PIN, HIGH);
   pinMode(RESET_PIN, INPUT);
 
   Serial.println(F("Reset complete. Clock stopped. Waiting for next command."));
@@ -384,11 +388,38 @@ void handleCommand(const char *line) {
     if (!n) { Serial.println(F("usage: pulse N")); return; }
     long k = parseNum(n);
     if (k < 1) k = 1;
+    clockMode = false;
     pulsesRemaining = (int)k;
     pulsesTotal = (int)k;
     pulseState = HIGHING;
-    digitalWrite(CLOCK_PIN, HIGH);
+    fastDigitalWrite(CLOCK_PIN, HIGH);
     lastToggleTs = micros();
+    return;
+  }
+
+  if (strcmp(tok, "clock") == 0) {
+    if (mode != MODE_SNIFF) { Serial.println(F("clock only in SNIFF mode")); return; }
+    char *n = strtok(nullptr, " ");
+    if (!n) { Serial.println(F("usage: clock <hz>  (0 to stop)")); return; }
+    long hz = strtol(n, nullptr, 10);
+    if (hz == 0) {
+      clockMode = false;
+      pulseState = IDLE;
+      pulsesRemaining = 0;
+      fastDigitalWrite(CLOCK_PIN, LOW);
+      Serial.println(F("Clock stopped"));
+      return;
+    }
+    if (hz < 1 || hz > 1000) { Serial.println(F("range: 1..1000 Hz")); return; }
+    unsigned long halfUs = 500000UL / (unsigned long)hz;
+    pulseHighUs = halfUs;
+    pulseLowUs  = halfUs;
+    clockMode = true;
+    lastAddr = 0xFFFF;
+    pulseState = HIGHING;
+    fastDigitalWrite(CLOCK_PIN, HIGH);
+    lastToggleTs = micros();
+    Serial.print(F("Clock running at ")); Serial.print(hz); Serial.println(F(" Hz"));
     return;
   }
 
@@ -436,7 +467,7 @@ void setup() {
   while (!Serial) {}
   sniffPins();
   Serial.println(F("Booted in SNIFF mode."));
-  Serial.println(F("Commands: mode sniff|prog | pulse N | reset | wr <addr> <byte> | dump <base> [count] | erase"));
+  Serial.println(F("Commands: mode sniff|prog | pulse N | clock <hz> (0=stop) | reset | wr <addr> <byte> | dump <base> [count] | erase"));
 }
 
 void loop() {
@@ -447,17 +478,17 @@ void loop() {
     switch (pulseState) {
       case IDLE: break;
       case HIGHING:
-        if ((micros() - lastToggleTs) >= PULSE_HIGH_US) {
+        if ((micros() - lastToggleTs) >= pulseHighUs) {
           sampleAndPrint();
-          digitalWrite(CLOCK_PIN, LOW);
+          fastDigitalWrite(CLOCK_PIN, LOW);
           pulseState = LOWING;
           lastToggleTs = micros();
         }
         break;
       case LOWING:
-        if ((micros() - lastToggleTs) >= PULSE_LOW_US) {
-          if (--pulsesRemaining > 0) {
-            digitalWrite(CLOCK_PIN, HIGH);
+        if ((micros() - lastToggleTs) >= pulseLowUs) {
+          if (clockMode || --pulsesRemaining > 0) {
+            fastDigitalWrite(CLOCK_PIN, HIGH);
             pulseState = HIGHING;
             lastToggleTs = micros();
           } else {
