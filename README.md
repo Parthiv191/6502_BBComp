@@ -1,103 +1,96 @@
 # 6502 Breadboard Computer
 
-A fully functional 8-bit computer built from the ground up on a breadboard using the **W65C02S** CPU.  
-This project demonstrates key computer architecture principles — including bus control, memory mapping, and timing — implemented entirely with discrete components and a custom-built programming/debugging tool. 
+A fully functional 8-bit computer built entirely on a breadboard using the W65C02S CPU. This is our hands-on project documenting everything from circuit design and wiring to programming and debugging.
 
-## *This is still an on-going project; this repository will be used to document our progress and anything we feel necessary.
-
----
-
-## Overview
-
-This project recreates a complete 6502 computer system using low-cost, readily available components.  
-Instead of using a commercial EEPROM programmer, we utilize an **Arduino Mega 2560** as a comprehensive interface for programming, memory writing, and logic-level debugging.
-
-> _Typical EEPROM programmers and logic analyzers can cost over $200. This system achieves the same functionality using an [ELEGOO Arduino Mega 2560](https://www.amazon.com/ELEGOO-ATmega2560-ATMEGA16U2-Arduino-Compliant/dp/B01H4ZDYCE/) and a custom Arduino sketch we've developed._
-
-### Why the Arduino Mega?
-While many builders, like **Ben Eater**, use an Arduino Nano or Mini coupled with **74HC595 shift registers** to expand I/O, we opted for the **Mega 2560**. 
-
-* **Direct Access:** With **54 digital I/O pins**, the Mega allows us to connect directly to the 16-bit address bus, 8-bit data bus, and control lines simultaneously.
-* **Simplicity:** This eliminates the need for shift-register wiring and the "bit-banging" required to shift data in and out, making the debugger much more responsive and easier to wire.
+**Note:** This is ongoing work. We're adding to the docs as we go.
 
 ---
 
-## 🧩 Features
+## What is this?
 
-- **Mega-Based Programmer/Debugger**
-  - Uses 54-pin I/O to interface directly with the 6502 buses.
-  - Writes data to EEPROM and reads back for verification.
-  - Provides clock, reset, and control line management.
-  - Monitors data and address buses for real-time debugging.
-  - Enables step-by-step execution and signal tracing via the Serial Monitor.
+We built a working 6502 computer from scratch using discrete components and a breadboard. Instead of buying a fancy EEPROM programmer ($200+) or logic analyzer ($200+), we used an Arduino Mega 2560 to program memory, read it back, and debug the system. It works surprisingly well and costs way less.
 
-- **Fully Wired 6502 System**
-  - Breadboard implementation of the W65C02 CPU.
-  - EEPROM used for program memory (AT28C256).
-  - SRAM for data memory (AS6C62256).
-  - External clock oscillator and discrete control logic.
+### Why the Arduino Mega instead of shift registers?
 
-- **Educational and Accessible Design**
-  - Built entirely from off-the-shelf components.
-  - No specialized tools required — just an Arduino Mega and basic wiring.
-  - Clear documentation and schematics for replication.
+Ben Eater's approach uses an Arduino Nano with 74HC595 shift registers to expand I/O. We went with the Mega because:
+
+- **54 digital pins** means we can connect directly to the address bus (16 bits), data bus (8 bits), and control lines all at once
+- No bit-banging required — everything is straightforward wiring
+- The debugger is more responsive and simpler to set up
 
 ---
 
-## 📦 Parts List
+## What's included
 
-| Component | Quantity | Description / Link |
-| :--- | :--- | :--- |
-| **W65C02 CPU** | 1 | [Western Design Center W65C02S6TPG-14](https://www.mouser.com/ProductDetail/Western-Design-Center-WDC/W65C02S6TPG-14?qs=opBjA1TV903lvWo9AEKH5w%3D%3D) |
-| **Arduino Mega 2560** | 1 | [ELEGOO ATmega2560 (54 I/O Pins)](https://www.amazon.com/ELEGOO-ATmega2560-ATMEGA16U2-Arduino-Compliant/dp/B01H4ZDYCE/) |
-| **W65C22 VIA** | 1 | [Western Design Center W65C22S6TPG-14](https://www.mouser.com/ProductDetail/Western-Design-Center-WDC/W65C22S6TPG-14?qs=opBjA1TV9038jNZ%252Bop8JdA%3D%3D) |
-| **AT28C256 EEPROM** | 1 | [Microchip AT28C256-15PU](https://www.mouser.com/ProductDetail/Microchip-Technology/AT28C256-15PU?qs=MAR/2X5XOp7eAU2/lNw9oA%3D%3D) |
-| **AS6C62256 SRAM** | 1 | [Alliance Memory AS6C62256-55PCN](https://www.mouser.com/ProductDetail/Alliance-Memory/AS6C62256-55PCN?qs=LD2UibpCYJqgbIupMJnGTQ%3D%3D) |
-| **16x2 LCD Display** | 1 | [White on Blue LCD](https://www.amazon.com/gp/product/B01BB4VKIE) |
-| **74HC00 (NAND gate)** | 1 | Logic control for timing and addressing |
-| **1 MHz Crystal Oscillator** | 1 | [Jameco MXO45-3C-1M0000-JVP](https://www.jameco.com/z/MXO45-3C-1M0000-JVP-Jameco-ValuePro-1-MHz-Full-Can-Crystal-Oscillator_27861.html) |
-| **Breadboards** | 3-4 | Main CPU, memory, and I/O boards |
-| **Resistors/Caps/LEDs** | Various | For pull-ups, decoupling, and indicators |
+- **Arduino Mega programmer/debugger**
+  - Reads and writes directly to the EEPROM
+  - Monitors address and data buses
+  - Step-through execution
+  - Real-time signal tracing via serial
 
----
+- **Working 6502 system**
+  - W65C02 CPU on breadboard
+  - AT28C256 EEPROM for programs
+  - AS6C62256 SRAM for data
+  - 1 MHz clock and control logic
 
-## 📂 Repository Structure
-
-| Path | Description |
-| :--- | :--- |
-| `eeprom_programmer/` | Arduino Mega code for programming and bus debugging |
-| `docs/` | Supporting documentation and bus explanations |
-| `schematics/` | Full wiring diagrams for the Mega-to-6502 interface |
-| `programs/` | Assembly programs like “Hello World” and demos |
+- **Docs and schematics** for building it yourself
 
 ---
 
-## 💡 Design Philosophy
+## Parts you'll need
 
-The main goal is **accessibility and transparency**. By using a high-pin-count microcontroller like the Mega, we bypass the "black box" nature of commercial programmers. You can see every bit move across the bus in your serial monitor, which is invaluable for learning how the 6502 actually thinks.
-
-> **Note on Logic Levels:** The Arduino Mega operates at 5V, which is perfectly compatible with the W65C02S and the AT28C256 EEPROM, making it a "plug-and-play" debugging solution for this specific architecture.
-
----
-
-## 🙏 Acknowledgments
-
-This project was primarily inspired by **Ben Eater's** 8-bit computer series. His clear, educational approach to teaching computer architecture and his detailed video series have been instrumental in making projects like this accessible to learners and hobbyists like ourselves!
-
-**Resources:**
-- [Ben Eater's 6502 Series](https://eater.net/6502)
-- [WDC 6502 Datasheet](https://www.westerndesigncenter.com/wdc/w65c02s-chip.php)
-
----
-
-## 🔧 Planned Improvements
-
-- Integrate the W65C22 VIA for keyboard input.
-- Create a Python script to automate hex file uploads to the Arduino Mega.
-- Map out the full 64KB memory map including the Mega's monitor range.
+| Part | Qty | Notes |
+| --- | --- | --- |
+| W65C02S CPU | 1 | [Mouser](https://www.mouser.com/ProductDetail/Western-Design-Center-WDC/W65C02S6TPG-14) |
+| Arduino Mega 2560 | 1 | [Amazon](https://www.amazon.com/ELEGOO-ATmega2560-ATMEGA16U2-Arduino-Compliant/dp/B01H4ZDYCE/) |
+| AT28C256 EEPROM | 1 | [Mouser](https://www.mouser.com/ProductDetail/Microchip-Technology/AT28C256-15PU) |
+| AS6C62256 SRAM | 1 | [Mouser](https://www.mouser.com/ProductDetail/Alliance-Memory/AS6C62256-55PCN) |
+| W65C22 VIA | 1 | [Mouser](https://www.mouser.com/ProductDetail/Western-Design-Center-WDC/W65C22S6TPG-14) |
+| 16x2 LCD | 1 | For output display |
+| 1 MHz oscillator | 1 | [Jameco](https://www.jameco.com/z/MXO45-3C-1M0000-JVP-Jameco-ValuePro-1-MHz-Full-Can-Crystal-Oscillator_27861.html) |
+| 74HC00 | 1 | Logic control |
+| Breadboards | 3-4 | CPU, memory, and I/O boards |
+| Resistors, caps, LEDs | Various | Pull-ups, decoupling, indicators |
 
 ---
 
-## 🧰 License
+## How this repo is organized
 
-Open-source for educational and non-commercial use. Contributions and forks are welcome.
+```
+eeprom_programmer/     — Arduino code for programming and debugging
+docs/                  — Notes on how the buses work and other details
+schematics/            — Wiring diagrams
+programs/              — Assembly code (hello world, demos, etc)
+```
+
+---
+
+## Why we built it this way
+
+We wanted something transparent and learnable. With a commercial programmer, you never see what's happening. By using the Mega, every signal is visible — you can trace exactly what's going on with the buses and control lines. No black boxes.
+
+The 5V logic levels on the Arduino Mega line up perfectly with the W65C02S and AT28C256, so there's no voltage translation needed either.
+
+---
+
+## Inspiration and thanks
+
+This whole thing started from watching Ben Eater's 6502 series. His videos made computer architecture click in a way textbooks never did.
+
+- [Ben Eater's 6502 videos](https://eater.net/6502)
+- [W65C02 datasheet](https://www.westerndesigncenter.com/wdc/w65c02s-chip.php)
+
+---
+
+## What's next
+
+- Wire up the W65C22 VIA for keyboard input
+- Build a Python script to upload hex files easier
+- Map out the full 64KB memory layout
+
+---
+
+## License
+
+Open source for education and tinkering. Fork it, modify it, build it.
